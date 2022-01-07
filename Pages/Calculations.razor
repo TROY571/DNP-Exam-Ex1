@@ -1,0 +1,65 @@
+﻿@page "/Calculations"
+@using VolumeWebService.VolumeCalculator
+@using VolumeWeb.Data
+@inject IResultService resultService;
+<h3>Calculations</h3>
+
+@if (resultsToShow == null)
+{
+    <p>
+        <em>Loading...</em>
+    </p>
+}
+else if (!resultsToShow.Any())
+{
+    <p>
+        <em>No Result exist.Please add some. </em>
+    </p>
+}
+else
+{
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Id</th>
+            <th>Type</th>
+            <th>Height</th>
+            <th>Radius</th>
+            <th>Volume</th>
+            <th>Delete</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var item in results)
+        {
+            <tr>
+                <td>@item.id</td>
+                <td>@item.type</td>
+                <td>@item.height</td>
+                <td>@item.radius</td>
+                <td>@item.volume</td>
+                <td><button @onclick="() => DeleteResult(item.id)"><i class="oi oi=trash" style="color: red"/></button></td>
+            </tr>
+        }
+        </tbody>
+    </table>
+
+}
+
+@code {
+    private IList<VolumeResult> results;
+    private IList<VolumeResult> resultsToShow;
+
+    protected override async Task OnInitializedAsync()
+    {
+        results = await resultService.GetResultsAsync();
+        resultsToShow = results;
+    }
+    
+    public async Task DeleteResult(int id)
+    {
+        await resultService.RemoveVolumeResultAsync(id);
+        results = await resultService.GetResultsAsync();
+        resultsToShow = results;
+    }
+}

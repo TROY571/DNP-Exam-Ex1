@@ -1,0 +1,56 @@
+﻿@page "/Calculator"
+@using VolumeWeb.Data
+@using VolumeWebService.VolumeCalculator
+@inject IResultService resultService;
+<h3>Calculator</h3>
+<EditForm Model="@newCylinderItem" OnValidSubmit="@AddCylinder">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <h2>Cylinder</h2>
+    <p>Height:</p>
+    <InputNumber @bind-Value="newCylinderItem.height"></InputNumber>
+    <p>Radius:</p>
+    <InputNumber @bind-Value="newCylinderItem.radius"></InputNumber>
+    <button>Calculate Volume of Cylinder</button>
+</EditForm>
+
+<EditForm Model="@newConeItem" OnValidSubmit="@AddCone">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <h2>Cone</h2>
+    <p>Height:</p>
+    <InputNumber @bind-Value="newConeItem.height"></InputNumber>
+    <p>Radius:</p>
+    <InputNumber @bind-Value="newConeItem.radius"></InputNumber>
+    <button>Calculate Volume of Cone</button>
+</EditForm>
+@code {
+    private VolumeResult newCylinderItem = new VolumeResult();
+    private VolumeResult newConeItem = new VolumeResult();
+
+    private async void AddCylinder()
+    {
+        try
+        {
+            await resultService.CalculateVolumeCylinder(newCylinderItem.height, newCylinderItem.radius);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
+
+    private async void AddCone()
+    {
+        try
+        {
+            await resultService.CalculateVolumeCone(newConeItem.height, newConeItem.radius);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            throw;
+        }
+    }
+}
